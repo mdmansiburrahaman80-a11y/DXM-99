@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DXM | TIKTOK_ENFORCER_V14_PRIVATE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #000;
+            color: #00ff41;
+            font-family: 'Ubuntu Mono', monospace;
+            height: 100vh;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        /* Scanline Overlay */
+        body::before {
+            content: " ";
+            position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px; z-index: 10000; pointer-events: none;
+        }
+
+        /* Splash Screen */
+        #splash {
+            position: fixed; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 99999;
+        }
+
+        .logo {
+            font-size: 3rem; font-weight: bold;
+            color: #00ff41; text-shadow: 0 0 20px #00ff41;
+            animation: jump 0.5s infinite alternate, glitch 0.2s infinite;
+        }
+
+        @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-25px); } }
+        @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.5; color: #ff0000; } 100% { opacity: 1; } }
+
+        /* Main Console */
+        #main-app { display: none; flex-direction: column; height: 100vh; padding: 20px; }
+        #console { flex-grow: 1; overflow-y: auto; font-size: 13px; line-height: 1.5; margin-bottom: 20px; }
+
+        .input-panel {
+            background: #080808; border: 1px solid #004400;
+            padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+
+        input, select, button {
+            background: #000; border: 1px solid #00ff41;
+            color: #00ff41; padding: 12px; font-family: inherit; outline: none;
+        }
+
+        button { background: #00ff41; color: #000; font-weight: bold; cursor: pointer; border: none; }
+        button:hover { background: #fff; box-shadow: 0 0 20px #00ff41; }
+
+        /* Modals & Overlays */
+        .overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 50000; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+        }
+
+        #match-found { border: 2px solid #00ff41; padding: 40px; background: #000; box-shadow: 0 0 50px #00ff41; }
+
+        /* Final Dashboard */
+        #dashboard {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 80000; flex-direction: column; padding: 20px; overflow-y: auto;
+        }
+
+        .stat-card { border: 1px solid #004400; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .more-data { border: 1px dashed #00ff41; padding: 15px; background: rgba(0, 50, 0, 0.1); font-size: 12px; margin-top: 15px; }
+
+        .dev-badge { color: #00ff41; font-weight: bold; border: 1px solid #00ff41; padding: 5px 15px; display: inline-block; margin-top: 10px; }
+
+        footer { text-align: center; padding: 10px; font-size: 11px; color: #003300; border-top: 1px solid #111; margin-top: auto; }
+        
+        /* Utility */
+        .highlight { color: #fff; font-weight: bold; }
+        #phase-method, #phase-proxy { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash">
+        <div class="logo">DXM_ENFORCER_V14</div>
+        <p style="margin-top: 30px; letter-spacing: 5px; color: #444;">AUTHORIZING SYSTEM KERNEL...</p>
+    </div>
+
+    <!-- Main Console -->
+    <div id="main-app">
+        <div style="color: #004400; margin-bottom: 10px;">[DXM-PRIVATE-SYSTEM-STABLE-V14]</div>
+        <div id="console"></div>
+
+        <div class="input-panel" id="phase-url">
+            <span style="font-size: 11px;">TARGET_URL:</span>
+            <input type="text" id="target-link" placeholder="Enter TikTok Link..." autocomplete="off">
+            <button onclick="startPhase1()">INITIALIZE EXPLOIT</button>
+        </div>
+
+        <div class="input-panel" id="phase-method">
+            <span style="font-size: 11px;">SELECT BYPASS METHOD:</span>
+            <select id="method">
+                <option>METHOD: SESSION_HIJACK_V2</option>
+                <option>METHOD: COOKIE_CLONE_ROOT</option>
+                <option>METHOD: TOKEN_SPOOF_INJECTION</option>
+            </select>
+            <button onclick="startPhase2()">CONFIRM METHOD</button>
+        </div>
+
+        <div class="input-panel" id="phase-proxy">
+            <span style="font-size: 11px;">SELECT PROXY NODE:</span>
+            <select id="proxy">
+                <option>NODE_01: FRANKFURT_DE</option>
+                <option>NODE_09: SILICON_VALLEY_US</option>
+                <option>NODE_SEC: PRIVATE_UPLINK</option>
+            </select>
+            <button onclick="startPhase3()">AUTHORIZE ACCESS</button>
+        </div>
+
+        <footer>DEVELOPED BY <span style="color:#00ff41">DXM</span> | 2024 ENFORCEMENT ENGINE</footer>
+    </div>
+
+    <!-- Match Found Modal -->
+    <div id="match-modal" class="overlay">
+        <div id="match-found">
+            <h1 style="color: #fff; text-shadow: 0 0 10px #00ff41;">MATCH FOUND!</h1>
+            <p style="margin: 20px 0;">Account Integrity Bypassed Successfully.</p>
+            <div class="dev-badge">DEVELOPER DXM</div>
+            <button style="width: 100%; margin-top: 20px;" class="button" onclick="finalizeLogin()">LOGIN TO ACCOUNT</button>
+        </div>
+    </div>
+
+    <!-- Final Login Step -->
+    <div id="login-step" class="overlay">
+        <div class="logo" style="font-size: 1.5rem;">LOGGING IN...</div>
+        <div id="step-text" style="margin-top: 20px; font-size: 13px;"></div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard">
+        <div style="border-bottom: 1px solid #00ff41; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between;">
+            <span style="font-size: 18px;">REPORT: ACCOUNT_DASHBOARD</span>
+            <span class="dev-badge" style="margin-top:0">DXM_ENFORCER</span>
+        </div>
+        
+        <p style="font-size: 12px; margin-bottom: 20px;">TARGET: <span id="dash-link" class="highlight"></span></p>
+
+        <div class="stat-card"><span>VIDEOS:</span> <span class="highlight" id="v">0</span></div>
+        <div class="stat-card"><span>LIKES:</span> <span class="highlight" id="l">0</span></div>
+        <div class="stat-card"><span>FOLLOWERS:</span> <span class="highlight" id="f">0</span></div>
+        <div class="stat-card"><span>COMMENTS:</span> <span class="highlight" id="c">0</span></div>
+
+        <div class="more-data">
+            <p style="color: #00ff41; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #003300;">[ MORE DATA ]</p>
+            <p>> UID: <span class="highlight">772910449102837</span></p>
+            <p>> REGION: <span class="highlight">USA_NY_NODE_9</span></p>
+            <p>> STATUS: <span class="highlight" style="color:#00ff00">BYPASSED_AND_ACTIVE</span></p>
+            <p>> TOKEN: <span class="highlight">eyJhbGciOiJIUzI1NiIsInR5cCI6...</span></p>
+            <p>> SECURITY_PATCH: <span class="highlight">EXPOSED_VULNERABILITY</span></p>
+            <p>> IP_ADDR: <span class="highlight">104.28.19.102</span></p>
+        </div>
+
+        <button style="margin-top: 30px; background: #ff0000; color: #fff; width: 100%; padding: 15px; border: none; font-weight: bold; cursor: pointer;" onclick="location.reload()">TERMINATE SESSION</button>
+        <p style="text-align: center; margin-top: 20px; font-size: 11px; color: #333;">DEVELOPED BY DXM // SYSTEM_V14</p>
+    </div>
+
+    <script>
+        // Splash logic
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('main-app').style.display = 'flex';
+        }, 3000);
+
+        const consoleOut = document.getElementById('console');
+        const logs = [
+            "GET /api/v2/user_profile HTTP/1.1", "Bypassing WAF security...", "Handshaking with TikTok API...",
+            "Checking vulnerability: CVE-2024-X", "Status: Intercepting session headers...",
+            "Decrypting X-Bogus signature...", "Warning: Firewalls active. Rerouting...",
+            "Injecting exploit payload...", "SUCCESS: Access Token Found.", "Cloning cookies: _sid, _tt_data..."
+        ];
+
+        function runLogs(count, callback) {
+            let i = 0;
+            let interval = setInterval(() => {
+                let div = document.createElement('div');
+                div.innerHTML = `<span style="color:#003300">[${new Date().toLocaleTimeString()}]</span> > ` + logs[Math.floor(Math.random()*logs.length)];
+                consoleOut.appendChild(div);
+                consoleOut.scrollTop = consoleOut.scrollHeight;
+                if(i++ > count) { clearInterval(interval); callback(); }
+            }, 60);
+        }
+
+        function startPhase1() {
+            if(!document.getElementById('target-link').value) return;
+            document.getElementById('phase-url').style.display = 'none';
+            runLogs(60, () => { document.getElementById('phase-method').style.display = 'flex'; });
+        }
+
+        function startPhase2() {
+            document.getElementById('phase-method').style.display = 'none';
+            runLogs(70, () => { document.getElementById('phase-proxy').style.display = 'flex'; });
+        }
+
+        function startPhase3() {
+            document.getElementById('phase-proxy').style.display = 'none';
+            runLogs(80, () => { document.getElementById('match-modal').style.display = 'flex'; });
+        }
+
+        function finalizeLogin() {
+            document.getElementById('match-modal').style.display = 'none';
+            document.getElementById('login-step').style.display = 'flex';
+            const stepText = document.getElementById('step-text');
+            const steps = ["Establishing tunnel...", "Bypassing 2FA Node...", "Injecting session...", "Redirecting..."];
+            let s = 0;
+            let si = setInterval(() => {
+                stepText.textContent = ">>> " + steps[s++];
+                if(s >= steps.length) { clearInterval(si); showDashboard(); }
+            }, 1300);
+        }
+
+        function showDashboard() {
+            document.getElementById('login-step').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('dash-link').textContent = document.getElementById('target-link').value;
+            
+            animateNum("v", 148);
+            animateNum("l", 950, "K");
+            animateNum("f", 2.5, "M");
+            animateNum("c", 45, "K");
+        }
+
+        function animateNum(id, end, suffix="") {
+            let obj = document.getElementById(id);
+            let curr = 0;
+            let timer = setInterval(() => {
+                curr += end / 25;
+                if(curr >= end) { obj.textContent = end + suffix; clearInterval(timer); }
+                else { obj.textContent = curr.toFixed(1); }
+            }, 50);
+        }
+    </script>
+</body>
+</html>
